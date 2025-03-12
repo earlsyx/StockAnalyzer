@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
 
@@ -27,7 +28,15 @@ public partial class MainWindow : Window
     private async void Search_Click(object sender, RoutedEventArgs e)
     {
         BeforeLoadingStockData();
+        var getStocksTasks = GetStocks();
 
+        await getStocksTasks;
+        
+        AfterLoadingStockData();
+    }
+
+    private async Task GetStocks()
+    {
         try
         {
             var store = new DataStore();
@@ -36,12 +45,10 @@ public partial class MainWindow : Window
 
             Stocks.ItemsSource = await responseTask;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Notes.Text = ex.Message;
         }
-      
-        AfterLoadingStockData();
     }
 
 
